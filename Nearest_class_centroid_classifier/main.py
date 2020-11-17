@@ -134,7 +134,7 @@ def calculate_success_rate(loaded_images, loaded_labels):
 
     print("Total image labels: ", counter)
     print("Succeful matched image labels: ", success)
-    print("Percentage: ",percentage,"%")
+    print(f"Percentage: {percentage}%")
 
 
 
