@@ -32,8 +32,8 @@ def fetch_specific_image_in_binary(imageNumber, loaded_images):
     return matrix[:,imageNumber]
 
 
-def display_image(imageNumber):
-    data = fetch_specific_image_in_binary(imageNumber)
+def display_image(imageNumber, loaded_images):
+    data = fetch_specific_image_in_binary(imageNumber, loaded_images)
     print(data)
     matrix = np.zeros(shape=(40,30,3), dtype=np.uint8)
 
@@ -56,6 +56,7 @@ def load_ORL_labels():
     content = open("/Users/pmh/Desktop/classification_scheme/Attached_files/ORL_txt/orl_lbls.txt", 'r')
     readContent = content.read().split()
     return readContent
+
 
 def fetch_label_by_image_id(image_id, loaded_labels):
     return loaded_labels[image_id]
@@ -100,11 +101,29 @@ def fetch_test_sets(loaded_images, loaded_labels):
     return test_list
 
 
+
+def nearest_class_centroid(loaded_images, loaded_labels):
+    training_data = fetch_training_sets(loaded_images, loaded_labels)
+    training_images = [training_data[i][0] for i in range(len(training_data))]
+    training_labels = [training_data[i][1] for i in range(len(training_data))]
+
+    clf = NearestCentroid()
+    clf.fit(training_images, training_labels)
+    NearestCentroid()
+
+    test_data = fetch_test_sets(loaded_images, loaded_labels)
+    training_images = [test_data[i][0] for i in range(len(test_data))]
+
+    return print(clf.predict(training_images))
+
+
+
 if __name__ == "__main__": 
     # prerequisites
     loaded_images = load_ORL_face_data_set_40x30()
     loaded_labels = load_ORL_labels()
 
-    test01 = fetch_training_sets(loaded_images, loaded_labels)
-    test02 = fetch_test_sets(loaded_images, loaded_labels)
-    print(len(test02))
+    nearest_class_centroid(loaded_images, loaded_labels)
+
+
+    
