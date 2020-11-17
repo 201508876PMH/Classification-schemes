@@ -112,9 +112,29 @@ def nearest_class_centroid(loaded_images, loaded_labels):
     NearestCentroid()
 
     test_data = fetch_test_sets(loaded_images, loaded_labels)
-    training_images = [test_data[i][0] for i in range(len(test_data))]
+    test_images = [test_data[i][0] for i in range(len(test_data))]
 
-    return print(clf.predict(training_images))
+    return clf.predict(test_images)
+
+
+def calculate_success_rate(loaded_images, loaded_labels):
+    predicted_data_labels = nearest_class_centroid(loaded_images, loaded_labels)
+
+    test_data = fetch_test_sets(loaded_images, loaded_labels)
+    test_labels = [test_data[i][1] for i in range(len(test_data))]
+    
+    counter = 0
+    success = 0
+    for label in test_labels:
+        if(label == predicted_data_labels[counter]):
+            success = success + 1
+        counter = counter + 1
+
+    percentage = (107/120)*100
+
+    print("Total image labels: ", counter)
+    print("Succeful matched image labels: ", success)
+    print("Percentage: ",percentage,"%")
 
 
 
@@ -123,7 +143,7 @@ if __name__ == "__main__":
     loaded_images = load_ORL_face_data_set_40x30()
     loaded_labels = load_ORL_labels()
 
-    nearest_class_centroid(loaded_images, loaded_labels)
+    calculate_success_rate(loaded_images, loaded_labels)
 
 
     
