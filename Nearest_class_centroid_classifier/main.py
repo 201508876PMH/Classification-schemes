@@ -3,28 +3,13 @@ import numpy as np
 from PIL import Image
 from sklearn.neighbors import NearestCentroid
 
+import sys
+sys.path.append("/Users/pmh/Desktop/classification_scheme/Prerequisites") 
+from LoadFiles import *
 
 # Column = (vertical) =  1 colomn = 1200
 # Rows = (horizontal) = 1 row = 400
 
-def load_ORL_face_data_set_40x30():
-
-    content = open("/Users/pmh/Desktop/classification_scheme/Attached_files/ORL_txt/orl_data.txt", 'r')
-    readContent = content.read().split()
-    
-    matrix = np.zeros(shape=(1200,400))
-
-    counterRow = 0
-    counterColumn = 0
-    for elem in readContent:
-        if(counterColumn == 400):
-            counterColumn = 0
-            counterRow = counterRow + 1
-
-        matrix[counterRow][counterColumn] = elem
-        counterColumn = counterColumn + 1
-
-    return matrix
 
 
 def fetch_specific_image_in_binary(imageNumber, loaded_images):
@@ -52,17 +37,11 @@ def display_image(imageNumber, loaded_images):
     img.show()
 
 
-def load_ORL_labels():
-    content = open("/Users/pmh/Desktop/classification_scheme/Attached_files/ORL_txt/orl_lbls.txt", 'r')
-    readContent = content.read().split()
-    return readContent
-
-
 def fetch_label_by_image_id(image_id, loaded_labels):
     return loaded_labels[image_id]
 
 
-def fetch_training_sets(loaded_images, loaded_labels):
+def fetch_NCC_training_set(loaded_images, loaded_labels):
     traing_list = []
 
     counter = 0
@@ -81,7 +60,7 @@ def fetch_training_sets(loaded_images, loaded_labels):
     return traing_list
 
 
-def fetch_test_sets(loaded_images, loaded_labels):
+def fetch_NCC_testing_set(loaded_images, loaded_labels):
     test_list = []
 
     counter = 0
@@ -101,9 +80,8 @@ def fetch_test_sets(loaded_images, loaded_labels):
     return test_list
 
 
-
 def nearest_class_centroid(loaded_images, loaded_labels):
-    training_data = fetch_training_sets(loaded_images, loaded_labels)
+    training_data = fetch_NCC_training_set(loaded_images, loaded_labels)
     training_images = [training_data[i][0] for i in range(len(training_data))]
     training_labels = [training_data[i][1] for i in range(len(training_data))]
 
@@ -111,7 +89,8 @@ def nearest_class_centroid(loaded_images, loaded_labels):
     clf.fit(training_images, training_labels)
     NearestCentroid()
 
-    test_data = fetch_test_sets(loaded_images, loaded_labels)
+    test_data = fetch_NCC_testing_set(loaded_images, loaded_labels)
+    (loaded_images, loaded_labels)
     test_images = [test_data[i][0] for i in range(len(test_data))]
 
     return clf.predict(test_images)
@@ -120,7 +99,8 @@ def nearest_class_centroid(loaded_images, loaded_labels):
 def calculate_success_rate(loaded_images, loaded_labels):
     predicted_data_labels = nearest_class_centroid(loaded_images, loaded_labels)
 
-    test_data = fetch_test_sets(loaded_images, loaded_labels)
+    test_data = fetch_NCC_testing_set(loaded_images, loaded_labels)
+    (loaded_images, loaded_labels)
     test_labels = [test_data[i][1] for i in range(len(test_data))]
     
     counter = 0
@@ -137,11 +117,11 @@ def calculate_success_rate(loaded_images, loaded_labels):
     print(f"Percentage: {percentage}%")
 
 
-
 if __name__ == "__main__": 
     # prerequisites
-    loaded_images = load_ORL_face_data_set_40x30()
-    loaded_labels = load_ORL_labels()
+    file_loader = LoadFiles()
+    loaded_images = file_loader.load_ORL_face_data_set_40x30()
+    loaded_labels = file_loader.load_ORL_labels()
 
     calculate_success_rate(loaded_images, loaded_labels)
 
