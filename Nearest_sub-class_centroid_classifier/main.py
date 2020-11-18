@@ -58,34 +58,35 @@ def fetch_NSC_test_set(wanted_test_set_by_label, loaded_images, loaded_labels):
         x += 1
     return test_list
 
+
 def nearest_sub_class_centroid(wanted_training_set_by_label, loaded_images, loaded_labels):
     training_data = fetch_NSC_training_set(wanted_training_set_by_label, loaded_images, loaded_labels)
     training_images = [training_data[i][0] for i in range(len(training_data))]
-    training_labels = [training_data[i][1] for i in range(len(training_data))]
 
     test_data = fetch_NSC_test_set(wanted_training_set_by_label, loaded_images, loaded_labels)
     test_images = [test_data[i][0] for i in range(len(test_data))]
 
+    
+    pca = PCA(n_components=2)
+    training_images_pca = pca.fit_transform(training_images)
+    print("training images pca transformed: \n", pca.fit_transform(training_images_pca))
 
-    kmeans = KMeans(n_clusters=2, random_state=0).fit(training_images)
+    pca = PCA(n_components=2)
+    test_images_pca = pca.fit_transform(test_images)
+    print("test images pca transformed: \n", pca.fit_transform(test_images_pca))
+
+    kmeans = KMeans(n_clusters=2, random_state=0).fit(training_images_pca)
     print("KMeans labels: \n", kmeans.labels_)
-    print("KMeans predicted test images placement: \n",kmeans.predict(test_images))
+    print("KMeans predicted test images placement: \n",kmeans.predict(test_images_pca))
     print("KMeans cluster centers: \n",kmeans.cluster_centers_)
 
-    NSC_centroids = kmeans.cluster_centers_
-    pca = PCA(n_components=2)
-    print("Cluster centers pca transformed: \n", pca.fit_transform(NSC_centroids))
-
-    Z = training_images
-    pca = PCA(n_components=2)
-    print("Training images pca transformed: \n", pca.fit_transform(Z))
 
     return (kmeans.labels_,
-            kmeans.predict(test_images),
-            pca.fit_transform(NSC_centroids),
-            pca.fit_transform(Z))
+            kmeans.predict(test_images_pca),
+            kmeans.cluster_centers_,
+            training_images_pca)
 
-def plot_data(pca_centers, pca_images):
+def plot_data(kmeans_labels, pca_centers, pca_images):
 
     cluster_centers_X = [pca_centers[i][0] for i in range(len(pca_centers))]
     cluster_centers_Y = [pca_centers[i][1] for i in range(len(pca_centers))]
@@ -95,12 +96,17 @@ def plot_data(pca_centers, pca_images):
 
 
     plt.figure(figsize=(8,8))
-    plt.scatter(cluster_centers_X, cluster_centers_Y, c="green")
+    plt.scatter(cluster_centers_X, cluster_centers_Y, s=150, c="green")
     plt.annotate("  One of two Centroids",(cluster_centers_X[0],cluster_centers_Y[0]))
-    plt.scatter(pca_images_X, pca_images_Y, c="orange")
+
+    for i,elem in enumerate(kmeans_labels):
+        if(elem == 1):
+            plt.scatter(pca_images_X[i], pca_images_Y[i], s=50, c="orange")
+        else:
+            plt.scatter(pca_images_X[i], pca_images_Y[i], s=50, c="blue")
+
     plt.annotate("  One of seven PCA training images",(pca_images_X[0],pca_images_Y[0]))
-    plt.title("NSC")
-    plt.show()
+    plt.title(f"NSC, k={len(pca_centers)}, test-images={len(pca_images)}")
 
 
 
@@ -110,8 +116,15 @@ if __name__ == "__main__":
     loaded_images = file_loader.load_ORL_face_data_set_40x30()
     loaded_labels = file_loader.load_ORL_labels()
 
-    Kmean_labels, kmeans_predicted, pca_centers, pca_images = nearest_sub_class_centroid(2,loaded_images,loaded_labels)
-    plot_data(pca_centers, pca_images)
+    kmeans_labels, kmeans_predicted, pca_centers, pca_images = nearest_sub_class_centroid(2,loaded_images,loaded_labels)
+    plot_data(kmeans_labels, pca_centers, pca_images)
+
+    kmean_labels3, kmeans_predicted3, pca_centers3, pca_images3 = nearest_sub_class_centroid(3,loaded_images,loaded_labels)
+    plot_data(kmean_labels3, pca_centers3, pca_images3)
+
+    kmean_labels5, kmeans_predicted5, pca_centers5, pca_images5 = nearest_sub_class_centroid(5,loaded_images,loaded_labels)
+    plot_data(kmean_labels5, pca_centers5, pca_images5)
+    plt.show()
 
     # print(len(fetch_NSC_training_set(40, loaded_images, loaded_labels)))
     # print(fetch_NSC_training_set(40, loaded_images, loaded_labels))
