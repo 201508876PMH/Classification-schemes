@@ -84,29 +84,67 @@ def nearest_sub_class_centroid(wanted_training_set_by_label, loaded_images, load
     return (kmeans.labels_,
             kmeans.predict(test_images_pca),
             kmeans.cluster_centers_,
-            training_images_pca)
+            training_images_pca,
+            test_images_pca)
 
-def plot_data(kmeans_labels, pca_centers, pca_images):
+
+def plot_data(kmeans_labels, kmeans_test_images_predict, pca_centers, pca_images_training, pca_images_test):
 
     cluster_centers_X = [pca_centers[i][0] for i in range(len(pca_centers))]
     cluster_centers_Y = [pca_centers[i][1] for i in range(len(pca_centers))]
 
-    pca_images_X = [pca_images[i][0] for i in range(len(pca_images))]
-    pca_images_Y = [pca_images[i][1] for i in range(len(pca_images))]
+    pca_images_training_X = [pca_images_training[i][0] for i in range(len(pca_images_training))]
+    pca_images_training_Y = [pca_images_training[i][1] for i in range(len(pca_images_training))]
+
+    pca_images_test_X = [pca_images_test[i][0] for i in range(len(pca_images_test))]
+    pca_images_test_Y = [pca_images_test[i][1] for i in range(len(pca_images_test))]
+
+    print(len(pca_images_test_X))
+    print(len(pca_images_test_Y))
+
+    plt.figure(figsize=(10,10))
+    plt.scatter(cluster_centers_X, cluster_centers_Y, s=200, c="green", label="Centroids")
+    plt.annotate("Centroid 0",(cluster_centers_X[0],cluster_centers_Y[0]))
+    plt.annotate("Centroid 1",(cluster_centers_X[1],cluster_centers_Y[1]))
 
 
-    plt.figure(figsize=(8,8))
-    plt.scatter(cluster_centers_X, cluster_centers_Y, s=150, c="green")
-    plt.annotate("  One of two Centroids",(cluster_centers_X[0],cluster_centers_Y[0]))
-
+    training_list_0 = []
+    training_list_1 = []
     for i,elem in enumerate(kmeans_labels):
-        if(elem == 1):
-            plt.scatter(pca_images_X[i], pca_images_Y[i], s=50, c="orange")
+        if(elem == 0):
+            training_list_0.append((pca_images_training_X[i], pca_images_training_Y[i]))
         else:
-            plt.scatter(pca_images_X[i], pca_images_Y[i], s=50, c="blue")
+            training_list_1.append((pca_images_training_X[i], pca_images_training_Y[i]))
 
-    plt.annotate("  One of seven PCA training images",(pca_images_X[0],pca_images_Y[0]))
-    plt.title(f"NSC, k={len(pca_centers)}, test-images={len(pca_images)}")
+
+    plt.scatter([training_list_0[i][0] for i in range(len(training_list_0))],
+                [training_list_0[i][1] for i in range(len(training_list_0))],
+                s=150, c="blue", label="Training image(s) assigned to label 0")
+
+    plt.scatter([training_list_1[i][0] for i in range(len(training_list_1))],
+                [training_list_1[i][1] for i in range(len(training_list_1))],
+                s=150, c="orange", label="Training image(s) assigned to label 1")
+
+
+    test_list_0 = []
+    test_list_1 = []
+    for i,elem in enumerate(kmeans_test_images_predict):
+        if(elem == 1):
+            test_list_1.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        else:
+            test_list_0.append((pca_images_test_X[i], pca_images_test_Y[i]))
+
+
+    plt.scatter([test_list_0[i][0] for i in range(len(test_list_0))],
+                [test_list_0[i][1] for i in range(len(test_list_0))],
+                s=150, marker="v", c="purple", label="Test image(s) assigned to label 0")
+
+    plt.scatter([test_list_1[i][0] for i in range(len(test_list_1))],
+                [test_list_1[i][1] for i in range(len(test_list_1))],
+                s=150, marker="v", c="red", label="Test image(s) assigned to label 1")
+
+    plt.title(f"NSC, k={len(pca_centers)}, training-images={len(pca_images_training)}, test-images={len(pca_images_test)}")
+    i = plt.legend()
 
 
 
@@ -116,15 +154,16 @@ if __name__ == "__main__":
     loaded_images = file_loader.load_ORL_face_data_set_40x30()
     loaded_labels = file_loader.load_ORL_labels()
 
-    kmeans_labels, kmeans_predicted, pca_centers, pca_images = nearest_sub_class_centroid(2,loaded_images,loaded_labels)
-    plot_data(kmeans_labels, pca_centers, pca_images)
+    kmeans_labels, kmeans_predicted, pca_centers, pca_images_training, test_images_pca = nearest_sub_class_centroid(2,loaded_images,loaded_labels)
+    plot_data(kmeans_labels,kmeans_predicted, pca_centers, pca_images_training, test_images_pca)
 
-    kmean_labels3, kmeans_predicted3, pca_centers3, pca_images3 = nearest_sub_class_centroid(3,loaded_images,loaded_labels)
-    plot_data(kmean_labels3, pca_centers3, pca_images3)
+    kmean_labels3, kmeans_predicted3, pca_centers3, pca_images3_training, test_images_pca3 = nearest_sub_class_centroid(3,loaded_images,loaded_labels)
+    plot_data(kmean_labels3, kmeans_predicted3, pca_centers3, pca_images3_training, test_images_pca3)
 
-    kmean_labels5, kmeans_predicted5, pca_centers5, pca_images5 = nearest_sub_class_centroid(5,loaded_images,loaded_labels)
-    plot_data(kmean_labels5, pca_centers5, pca_images5)
+    kmean_labels5, kmeans_predicted5, pca_centers5, pca_images5_training, test_images_pca5 = nearest_sub_class_centroid(5,loaded_images,loaded_labels)
+    plot_data(kmean_labels5, kmeans_predicted5, pca_centers5, pca_images5_training, test_images_pca5)
     plt.show()
+
 
     # print(len(fetch_NSC_training_set(40, loaded_images, loaded_labels)))
     # print(fetch_NSC_training_set(40, loaded_images, loaded_labels))
