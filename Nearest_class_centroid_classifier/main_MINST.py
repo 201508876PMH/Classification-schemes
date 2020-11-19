@@ -4,6 +4,8 @@ from sklearn.neighbors import NearestCentroid
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
+import random as random
+import math
 
 
 def load_t10k_images():
@@ -22,7 +24,6 @@ def diplay_image(mnist, image):
 def nearest_class_centroid(images_training, labels_training, images_testing, labels_testing):
     clf = NearestCentroid()
     centroids = clf.fit(images_training, labels_training)
-    print("Centroids: ", centroids.centroids_)
 
     pca = PCA(n_components=(2))
     training_images_pca = pca.fit_transform(images_training)
@@ -33,16 +34,8 @@ def nearest_class_centroid(images_training, labels_training, images_testing, lab
 
     pca = PCA(n_components=(2))
     pca_centroids = pca.fit_transform(centroids.centroids_)
-    print(pca_centroids)
-
-    # kmeans = KMeans(n_clusters=(784), random_state=0).fit(training_images_pca)
-    # print("LOLOL", kmeans.labels_)
-    # kmeans.predict(test_images_pca)
-    # kmeans.cluster_centers_
 
     return (clf.predict(images_testing),
-            # kmeans.labels_,
-            # kmeans.predict(test_images_pca),
             pca_centroids,
             training_images_pca,
             test_images_pca)
@@ -66,52 +59,75 @@ def calculate_success_rate(images_training, labels_training, images_testing, lab
     print(f"Percentage: {percentage}%")
 
 
-def plot_data(kmeans_labels, predict_image_testing, pca_centroids, training_images_pca, test_images_pca):
-
-    cluster_centers_X = [pca_centroids[i][0] for i in range(len(pca_centroids))]
-    cluster_centers_Y = [pca_centroids[i][1] for i in range(len(pca_centroids))]
-
-    pca_images_training_X = [training_images_pca[i][0] for i in range(len(training_images_pca))]
-    pca_images_training_Y = [training_images_pca[i][1] for i in range(len(training_images_pca))]
+def plot_data(kmeans_labels, predicted_test_image_labels, pca_centroids, training_images_pca, test_images_pca):
 
     pca_images_test_X = [test_images_pca[i][0] for i in range(len(test_images_pca))]
     pca_images_test_Y = [test_images_pca[i][1] for i in range(len(test_images_pca))]
 
     plt.figure(figsize=(10,10))
-    plt.scatter(cluster_centers_X, cluster_centers_Y, s=500, c="green", label="Centroids")
 
-    training_list = []
-    for i,elem in enumerate(kmeans_labels):
-            training_list.append((pca_images_training_X[i], pca_images_training_Y[i]))
+    number_of_colors = 10
+    color = ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)]) for i in range(number_of_colors)]
 
-    plt.scatter([training_list[i][0] for i in range(len(training_list))],
-                [training_list[i][1] for i in range(len(training_list))],
-                s=80, c="orange", label="Training images")
+    test_list_0 = []
+    test_list_1 = []
+    test_list_2 = []
+    test_list_3 = []
+    test_list_4 = []
+    test_list_5 = []
+    test_list_6 = []
+    test_list_7 = []
+    test_list_8 = []
+    test_list_9 = []
 
+    for i,elem in enumerate(predicted_test_image_labels):
+        if(elem == 0):
+            test_list_0.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 1):
+            test_list_1.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 2):
+            test_list_2.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 3):
+            test_list_3.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 4):
+            test_list_4.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 5):
+            test_list_5.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 6):
+            test_list_6.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 7):
+            test_list_7.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        elif(elem == 8):
+            test_list_8.append((pca_images_test_X[i], pca_images_test_Y[i]))
+        else:
+            test_list_9.append((pca_images_test_X[i], pca_images_test_Y[i]))
 
-    test_list = []
-    for i,elem in enumerate(predict_image_testing):
-            test_list.append((pca_images_test_X[i], pca_images_test_Y[i]))
+    plt.scatter([test_list_0[i][0] for i in range(len(test_list_0))],[test_list_1[i][1] for i in range(len(test_list_0))], s=30, c=color[0], label="Test images for label 0", alpha=0.4)
+    plt.scatter([test_list_1[i][0] for i in range(len(test_list_1))],[test_list_1[i][1] for i in range(len(test_list_1))], s=30, c=color[1], label="Test imahges for label 1", alpha=0.4)
+    plt.scatter([test_list_2[i][0] for i in range(len(test_list_2))],[test_list_2[i][1] for i in range(len(test_list_2))], s=30, c=color[2], label="Test imahges for label 2", alpha=0.4)
+    plt.scatter([test_list_3[i][0] for i in range(len(test_list_3))],[test_list_3[i][1] for i in range(len(test_list_3))], s=30, c=color[3], label="Test imahges for label 3", alpha=0.4)
+    plt.scatter([test_list_4[i][0] for i in range(len(test_list_4))],[test_list_4[i][1] for i in range(len(test_list_4))], s=30, c=color[4], label="Test imahges for label 4", alpha=0.4)
+    plt.scatter([test_list_5[i][0] for i in range(len(test_list_5))],[test_list_5[i][1] for i in range(len(test_list_5))], s=30, c=color[5], label="Test imahges for label 5", alpha=0.4)
+    plt.scatter([test_list_6[i][0] for i in range(len(test_list_6))],[test_list_6[i][1] for i in range(len(test_list_6))], s=30, c=color[6], label="Test imahges for label 6", alpha=0.4)
+    plt.scatter([test_list_7[i][0] for i in range(len(test_list_7))],[test_list_7[i][1] for i in range(len(test_list_7))], s=30, c=color[7], label="Test imahges for label 7", alpha=0.4)
+    plt.scatter([test_list_8[i][0] for i in range(len(test_list_8))],[test_list_8[i][1] for i in range(len(test_list_8))], s=30, c=color[8], label="Test imahges for label 8", alpha=0.4)
+    plt.scatter([test_list_9[i][0] for i in range(len(test_list_9))],[test_list_9[i][1] for i in range(len(test_list_9))], s=30, c=color[9], label="Test imahges for label 9", alpha=0.4)  
+   
+    for i,centroid in enumerate(pca_centroids):
+        plt.scatter(pca_centroids[i][0], pca_centroids[i][1], s=150, c=color[i], label=f"Centroid {i}")
 
-    plt.scatter([test_list[i][0] for i in range(len(test_list))],
-                [test_list[i][1] for i in range(len(test_list))],
-                s=80, marker="v", c="purple", label="Test images")
-
-
-    # plt.title(f"NSC, k={len(pca_centers)}, training-images={len(pca_images_training)}, test-images={len(pca_images_test)}")
+    plt.title(f"NSC, k={len(pca_centroids)}, training-images={len(training_images_pca)}, test-images={len(pca_images_test_X)}")
     i = plt.legend()
 
 if __name__ == "__main__": 
 
     images_training, labels_training, images_testing, labels_testing, mndata = load_t10k_images()
-
     # diplay_image(mndata, images_training[1])
 
-    predict_image_testing, pca_centroids, training_images_pca, test_images_pca = nearest_class_centroid(images_training, labels_training,images_testing, labels_testing)
-    print("TIS")
-    
+    predicted_test_image_labels, pca_centroids, training_images_pca, test_images_pca = nearest_class_centroid(images_training, labels_training,images_testing, labels_testing)
+      
     calculate_success_rate(images_training, labels_training, images_testing, labels_testing)
-    plot_data(labels_training,predict_image_testing, pca_centroids, training_images_pca, test_images_pca)
+    plot_data(labels_training,predicted_test_image_labels, pca_centroids, training_images_pca, test_images_pca)
     plt.show()
 
     
