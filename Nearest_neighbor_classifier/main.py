@@ -93,11 +93,8 @@ def nearest_neighbor_class_centroid(loaded_images, loaded_labels):
 
 def calculate_success_rate(loaded_images, loaded_labels, predicted_images_pca):
     means_labels, kmeans_predicted, pca_centers, pca_images_training, test_images_pca, predicted_images_pca = nearest_neighbor_class_centroid(loaded_images, loaded_labels)
-    print(kmeans_predicted)
-    print(predicted_images_pca)
 
-
-    test_data = fetch_training_set(loaded_images, loaded_labels)
+    test_data = fetch_testing_set(loaded_images, loaded_labels)
     test_labels = [test_data[i][1] for i in range(len(test_data))]
 
     training_data = fetch_training_set(loaded_images, loaded_labels)
@@ -120,7 +117,6 @@ def calculate_success_rate(loaded_images, loaded_labels, predicted_images_pca):
 
     counter_library = 0
     success_library = 0
-
     for i,label in enumerate(predicted_images_pca):
         if(label == test_labels[i]):
             success_library = success_library + 1
