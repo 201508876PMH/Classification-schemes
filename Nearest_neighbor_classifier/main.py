@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.datasets import make_blobs
 from sklearn.decomposition import PCA
+from sklearn import neighbors, datasets
 
 
 def fetch_label_by_image_id(image_id, loaded_labels):
@@ -60,36 +61,43 @@ def fetch_testing_set(loaded_images, loaded_labels):
 def nearest_neighbor_class_centroid(loaded_images, loaded_labels):
     training_data = fetch_training_set(loaded_images, loaded_labels)
     training_images = [training_data[i][0] for i in range(len(training_data))]
+    training_labels = [training_data[i][1] for i in range(len(training_data))]
 
     test_data = fetch_testing_set(loaded_images, loaded_labels)
     test_images = [test_data[i][0] for i in range(len(test_data))]
 
     pca = PCA(n_components=(2))
     training_images_pca = pca.fit_transform(training_images)
-    print("training images pca transformed: \n", pca.fit_transform(training_images_pca))
 
     pca = PCA(n_components=(2))
     test_images_pca = pca.fit_transform(test_images)
-    print("test images pca transformed: \n", pca.fit_transform(test_images_pca))
 
     kmeans = KMeans(n_clusters=(280), random_state=0).fit(training_images_pca)
-    print("KMeans labels: \n", kmeans.labels_)
-    print("KMeans predicted test images placement: \n",kmeans.predict(test_images_pca))
-    print("KMeans cluster centers: \n",kmeans.cluster_centers_)
+    
+    # From library, but same as above
+    clf = neighbors.KNeighborsClassifier(1, weights='uniform')
+    clf.fit(training_images_pca, training_labels)
+
+    # print("KMeans labels: \n", kmeans.labels_)
+    # print("KMeans predicted test images placement: \n",kmeans.predict(test_images_pca))
+    # print("KMeans cluster centers: \n",kmeans.cluster_centers_)
 
 
     return (kmeans.labels_,
             kmeans.predict(test_images_pca),
             kmeans.cluster_centers_,
             training_images_pca,
-            test_images_pca)
+            test_images_pca,
+            clf.predict(test_images_pca))
 
 
-def calculate_success_rate(loaded_images, loaded_labels):
-    predicted_data_labels = nearest_neighbor_class_centroid(loaded_images, loaded_labels)
+def calculate_success_rate(loaded_images, loaded_labels, predicted_images_pca):
+    means_labels, kmeans_predicted, pca_centers, pca_images_training, test_images_pca, predicted_images_pca = nearest_neighbor_class_centroid(loaded_images, loaded_labels)
+    print(kmeans_predicted)
+    print(predicted_images_pca)
+
 
     test_data = fetch_training_set(loaded_images, loaded_labels)
-    (loaded_images, loaded_labels)
     test_labels = [test_data[i][1] for i in range(len(test_data))]
 
     training_data = fetch_training_set(loaded_images, loaded_labels)
@@ -97,16 +105,32 @@ def calculate_success_rate(loaded_images, loaded_labels):
 
     counter = 0
     success = 0
-    for i,label in enumerate(predicted_data_labels[1]):
+    for i,label in enumerate(kmeans_predicted):
         if(test_labels[i] == training_labels[label]):
             success = success + 1
         counter = counter + 1
 
-    total = len(predicted_data_labels[1])
+    total = len(kmeans_predicted)
     percentage = (success/total)*100
 
     print("Total image labels: ", counter)
     print("Succeful matched image labels: ", success)
+    print(f"Percentage: {percentage}%")
+
+
+    counter_library = 0
+    success_library = 0
+
+    for i,label in enumerate(predicted_images_pca):
+        if(label == test_labels[i]):
+            success_library = success_library + 1
+        counter_library = counter_library + 1
+
+    total = counter_library
+    percentage = (success_library/total)*100
+
+    print("Total image labels: ", counter_library)
+    print("Succeful matched image labels: ", success_library)
     print(f"Percentage: {percentage}%")
 
 
@@ -121,9 +145,6 @@ def plot_data(kmeans_labels, kmeans_test_images_predict, pca_centers, pca_images
 
     pca_images_test_X = [pca_images_test[i][0] for i in range(len(pca_images_test))]
     pca_images_test_Y = [pca_images_test[i][1] for i in range(len(pca_images_test))]
-
-    print(len(pca_images_test_X))
-    print(len(pca_images_test_Y))
 
     plt.figure(figsize=(10,10))
     plt.scatter(cluster_centers_X, cluster_centers_Y, s=200, c="green", label="Centroids")
@@ -157,8 +178,8 @@ if __name__ == "__main__":
     loaded_images = file_loader.load_ORL_face_data_set_40x30()
     loaded_labels = file_loader.load_ORL_labels()
 
-    kmeans_labels, kmeans_predicted, pca_centers, pca_images_training, test_images_pca = nearest_neighbor_class_centroid(loaded_images,loaded_labels)
-    calculate_success_rate(loaded_images, loaded_labels)
+    kmeans_labels, kmeans_predicted, pca_centers, pca_images_training, test_images_pca, predicted_images_pca = nearest_neighbor_class_centroid(loaded_images,loaded_labels)
+    calculate_success_rate(loaded_images, loaded_labels, predicted_images_pca)
     plot_data(kmeans_labels,kmeans_predicted, pca_centers, pca_images_training, test_images_pca)
     plt.show()
 
