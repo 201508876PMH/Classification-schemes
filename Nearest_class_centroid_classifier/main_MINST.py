@@ -22,21 +22,23 @@ def diplay_image(mnist, image):
 
 
 def nearest_class_centroid(images_training, labels_training, images_testing, labels_testing):
-    clf = NearestCentroid()
-    centroids = clf.fit(images_training, labels_training)
-
+    
     pca = PCA(n_components=(2))
     training_images_pca = pca.fit_transform(images_training)
-    pca.fit_transform(training_images_pca)
 
     pca = PCA(n_components=(2))
     test_images_pca = pca.fit_transform(images_testing)
+   
+    clf = NearestCentroid()
+    centroids = clf.fit(training_images_pca, labels_training)
+    print("Centoids: ", centroids.centroids_)
 
     pca = PCA(n_components=(2))
     pca_centroids = pca.fit_transform(centroids.centroids_)
 
-    return (clf.predict(images_testing),
-            pca_centroids,
+
+    return (clf.predict(test_images_pca),
+            centroids.centroids_,
             training_images_pca,
             test_images_pca)
 
@@ -102,19 +104,21 @@ def plot_data(kmeans_labels, predicted_test_image_labels, pca_centroids, trainin
         else:
             test_list_9.append((pca_images_test_X[i], pca_images_test_Y[i]))
 
-    plt.scatter([test_list_0[i][0] for i in range(len(test_list_0))],[test_list_1[i][1] for i in range(len(test_list_0))], s=30, c=color[0], label="Test images for label 0", alpha=0.4)
-    plt.scatter([test_list_1[i][0] for i in range(len(test_list_1))],[test_list_1[i][1] for i in range(len(test_list_1))], s=30, c=color[1], label="Test imahges for label 1", alpha=0.4)
-    plt.scatter([test_list_2[i][0] for i in range(len(test_list_2))],[test_list_2[i][1] for i in range(len(test_list_2))], s=30, c=color[2], label="Test imahges for label 2", alpha=0.4)
-    plt.scatter([test_list_3[i][0] for i in range(len(test_list_3))],[test_list_3[i][1] for i in range(len(test_list_3))], s=30, c=color[3], label="Test imahges for label 3", alpha=0.4)
-    plt.scatter([test_list_4[i][0] for i in range(len(test_list_4))],[test_list_4[i][1] for i in range(len(test_list_4))], s=30, c=color[4], label="Test imahges for label 4", alpha=0.4)
-    plt.scatter([test_list_5[i][0] for i in range(len(test_list_5))],[test_list_5[i][1] for i in range(len(test_list_5))], s=30, c=color[5], label="Test imahges for label 5", alpha=0.4)
-    plt.scatter([test_list_6[i][0] for i in range(len(test_list_6))],[test_list_6[i][1] for i in range(len(test_list_6))], s=30, c=color[6], label="Test imahges for label 6", alpha=0.4)
-    plt.scatter([test_list_7[i][0] for i in range(len(test_list_7))],[test_list_7[i][1] for i in range(len(test_list_7))], s=30, c=color[7], label="Test imahges for label 7", alpha=0.4)
-    plt.scatter([test_list_8[i][0] for i in range(len(test_list_8))],[test_list_8[i][1] for i in range(len(test_list_8))], s=30, c=color[8], label="Test imahges for label 8", alpha=0.4)
-    plt.scatter([test_list_9[i][0] for i in range(len(test_list_9))],[test_list_9[i][1] for i in range(len(test_list_9))], s=30, c=color[9], label="Test imahges for label 9", alpha=0.4)  
+    # print("list_0: ", test_list_0[1])
+    plt.scatter([test_list_0[i][0] for i in range(len(test_list_0))],[test_list_0[i][1] for i in range(len(test_list_0))], s=30, c=color[0], label="Test images for label 0", alpha=0.4)
+    plt.scatter([test_list_1[i][0] for i in range(len(test_list_1))],[test_list_1[i][1] for i in range(len(test_list_1))], s=30, c=color[1], label="Test images for label 1", alpha=0.4)
+    plt.scatter([test_list_2[i][0] for i in range(len(test_list_2))],[test_list_2[i][1] for i in range(len(test_list_2))], s=30, c=color[2], label="Test images for label 2", alpha=0.4)
+    plt.scatter([test_list_3[i][0] for i in range(len(test_list_3))],[test_list_3[i][1] for i in range(len(test_list_3))], s=30, c=color[3], label="Test images for label 3", alpha=0.4)
+    plt.scatter([test_list_4[i][0] for i in range(len(test_list_4))],[test_list_4[i][1] for i in range(len(test_list_4))], s=30, c=color[4], label="Test images for label 4", alpha=0.4)
+    plt.scatter([test_list_5[i][0] for i in range(len(test_list_5))],[test_list_5[i][1] for i in range(len(test_list_5))], s=30, c=color[5], label="Test images for label 5", alpha=0.4)
+    plt.scatter([test_list_6[i][0] for i in range(len(test_list_6))],[test_list_6[i][1] for i in range(len(test_list_6))], s=30, c=color[6], label="Test images for label 6", alpha=0.4)
+    plt.scatter([test_list_7[i][0] for i in range(len(test_list_7))],[test_list_7[i][1] for i in range(len(test_list_7))], s=30, c=color[7], label="Test images for label 7", alpha=0.4)
+    plt.scatter([test_list_8[i][0] for i in range(len(test_list_8))],[test_list_8[i][1] for i in range(len(test_list_8))], s=30, c=color[8], label="Test images for label 8", alpha=0.4)
+    plt.scatter([test_list_9[i][0] for i in range(len(test_list_9))],[test_list_9[i][1] for i in range(len(test_list_9))], s=30, c=color[9], label="Test images for label 9", alpha=0.4)  
    
     for i,centroid in enumerate(pca_centroids):
-        plt.scatter(pca_centroids[i][0], pca_centroids[i][1], s=150, c=color[i], label=f"Centroid {i}")
+        plt.scatter(pca_centroids[i][0], pca_centroids[i][1], s=230, c="black")
+        plt.scatter(pca_centroids[i][0], pca_centroids[i][1], s=180, c=color[i], label=f"Centroid {i}")
 
     plt.title(f"NSC, k={len(pca_centroids)}, training-images={len(training_images_pca)}, test-images={len(pca_images_test_X)}")
     i = plt.legend()
