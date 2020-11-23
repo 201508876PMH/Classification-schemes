@@ -2,15 +2,13 @@
 import numpy as np
 from PIL import Image
 from sklearn.neighbors import NearestCentroid
-
+from sklearn.decomposition import PCA
 import sys
 sys.path.append("/Users/pmh/Desktop/classification_scheme/Prerequisites") 
 from LoadFiles import *
 
 # Column = (vertical) =  1 colomn = 1200
 # Rows = (horizontal) = 1 row = 400
-
-
 
 def fetch_specific_image_in_binary(imageNumber, loaded_images):
     matrix = loaded_images
@@ -85,24 +83,34 @@ def nearest_class_centroid(loaded_images, loaded_labels):
     training_images = [training_data[i][0] for i in range(len(training_data))]
     training_labels = [training_data[i][1] for i in range(len(training_data))]
 
-    clf = NearestCentroid()
-    clf.fit(training_images, training_labels)
-    NearestCentroid()
+    pca = PCA(n_components=(2))
+    training_images_pca = pca.fit_transform(training_images)
 
+    clf = NearestCentroid()
+    clf.fit(training_images_pca, training_labels)
+
+    print(len(clf.centroids_))
+    #print(clf.centroids_)
+    
     test_data = fetch_NCC_testing_set(loaded_images, loaded_labels)
-    (loaded_images, loaded_labels)
     test_images = [test_data[i][0] for i in range(len(test_data))]
 
-    return clf.predict(test_images)
+    pca = PCA(n_components=(2))
+    test_images_pca = pca.fit_transform(test_images)
+
+    return clf.predict(test_images_pca)
 
 
 def calculate_success_rate(loaded_images, loaded_labels):
     predicted_data_labels = nearest_class_centroid(loaded_images, loaded_labels)
 
     test_data = fetch_NCC_testing_set(loaded_images, loaded_labels)
-    (loaded_images, loaded_labels)
     test_labels = [test_data[i][1] for i in range(len(test_data))]
-    
+
+    print("Predicted labes: \n", predicted_data_labels)
+    print("Test labels: \n", test_labels)
+
+
     counter = 0
     success = 0
     for label in test_labels:
@@ -123,6 +131,7 @@ if __name__ == "__main__":
     loaded_images = file_loader.load_ORL_face_data_set_40x30()
     loaded_labels = file_loader.load_ORL_labels()
 
+    display_image(0,loaded_images)
     calculate_success_rate(loaded_images, loaded_labels)
 
 

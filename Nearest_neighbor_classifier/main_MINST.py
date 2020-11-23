@@ -50,6 +50,7 @@ def nearest_neighbor_class_centroid(images_training, labels_training, images_tes
             training_images_pca,
             test_images_pca)
 
+
 def calculate_success_rate(labels_testing):
     predicted_test_image_labels, training_images_pca, test_images_pca = nearest_neighbor_class_centroid(images_training, labels_training, images_testing, labels_testing)
 
@@ -66,6 +67,7 @@ def calculate_success_rate(labels_testing):
     print("Total image labels: ", counter)
     print("Succeful matched image labels: ", success)
     print(f"Percentage: {percentage}%")
+
 
 def plot_data(predicted_images_pca, pca_images_training, pca_images_test):
     
@@ -103,7 +105,6 @@ def plot_data(predicted_images_pca, pca_images_training, pca_images_test):
 if __name__ == "__main__": 
 
     images_training, labels_training, images_testing, labels_testing, mndata = load_t10k_images()
-
 
     predicted_images_pca, pca_images_training, pca_images_test = nearest_neighbor_class_centroid(images_training, labels_training, images_testing, labels_testing)
       

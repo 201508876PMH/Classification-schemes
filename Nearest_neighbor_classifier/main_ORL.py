@@ -130,7 +130,6 @@ def calculate_success_rate(loaded_images, loaded_labels, predicted_images_pca):
     print(f"Percentage: {percentage}%")
 
 
-
 def plot_data(kmeans_labels, kmeans_test_images_predict, pca_centers, pca_images_training, pca_images_test):
 
     cluster_centers_X = [pca_centers[i][0] for i in range(len(pca_centers))]
@@ -165,7 +164,6 @@ def plot_data(kmeans_labels, kmeans_test_images_predict, pca_centers, pca_images
 
     plt.title(f"NSC, k={len(pca_centers)}, training-images={len(pca_images_training)}, test-images={len(pca_images_test)}")
     i = plt.legend()
-
 
 
 if __name__ == "__main__": 

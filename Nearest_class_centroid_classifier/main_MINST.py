@@ -22,31 +22,27 @@ def diplay_image(mnist, image):
 
 
 def nearest_class_centroid(images_training, labels_training, images_testing, labels_testing):
-    
-    pca = PCA(n_components=(2))
-    training_images_pca = pca.fit_transform(images_training)
 
     pca = PCA(n_components=(2))
+    training_images_pca = pca.fit_transform(images_training)
     test_images_pca = pca.fit_transform(images_testing)
    
     clf = NearestCentroid()
-    centroids = clf.fit(training_images_pca, labels_training)
-    print("Centoids: ", centroids.centroids_)
-
-    pca = PCA(n_components=(2))
-    pca_centroids = pca.fit_transform(centroids.centroids_)
-
+    clf.fit(training_images_pca, labels_training)
+    print("Centoids: \n", clf.centroids_)
 
     return (clf.predict(test_images_pca),
-            centroids.centroids_,
+            clf.centroids_,
             training_images_pca,
             test_images_pca)
-
 
 
 def calculate_success_rate(images_training, labels_training, images_testing, labels_testing):
     predict_image_testing, centroids, training_images_pca, test_images_pca = nearest_class_centroid(images_training, labels_training, images_testing, labels_testing)
     
+    print("Predicted testing labels: \n", (len(predict_image_testing)))
+    print("Test labels: \n", labels_testing)
+
     counter = 0
     success = 0
     for label in labels_testing:
@@ -57,7 +53,7 @@ def calculate_success_rate(images_training, labels_training, images_testing, lab
     percentage = (success/counter)*100
 
     print("Total image labels: ", counter)
-    print("Succeful matched image labels: ", success)
+    print("Successfully matched image labels: ", success)
     print(f"Percentage: {percentage}%")
 
 
@@ -123,15 +119,22 @@ def plot_data(kmeans_labels, predicted_test_image_labels, pca_centroids, trainin
     plt.title(f"NSC, k={len(pca_centroids)}, training-images={len(training_images_pca)}, test-images={len(pca_images_test_X)}")
     i = plt.legend()
 
+
 if __name__ == "__main__": 
-
+    # Load data
     images_training, labels_training, images_testing, labels_testing, mndata = load_t10k_images()
-    # diplay_image(mndata, images_training[1])
-
-    predicted_test_image_labels, pca_centroids, training_images_pca, test_images_pca = nearest_class_centroid(images_training, labels_training,images_testing, labels_testing)
+    
+    # Show one of images loaded
+    diplay_image(mndata, images_training[1])
+    
+    # Train algorithm and apply test data
+    data = nearest_class_centroid(images_training, labels_training,images_testing, labels_testing)
       
+    # Calculate success rate
     calculate_success_rate(images_training, labels_training, images_testing, labels_testing)
-    plot_data(labels_training,predicted_test_image_labels, pca_centroids, training_images_pca, test_images_pca)
+
+    # Plot results
+    plot_data(labels_training, data[0], data[1], data[2], data[3])
     plt.show()
 
     
