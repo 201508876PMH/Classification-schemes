@@ -6,8 +6,8 @@ In  this  Project  we  will implement  and compare  the  performance  of five cl
 
 # Data
 You can find the following two datasets inthe blackboard page of the course:<br />
-**ORL facedata set**: a set of 400 (vectorized) 40x30 facial images depicting 40 persons.<br />
-**MNIST data set**: a set of 70k (vectorized) 28x28 pixel images depicting hand-written numbers.
+- **ORL facedata set**: a set of 400 (vectorized) 40x30 facial images depicting 40 persons.<br />
+- **MNIST data set**: a set of 70k (vectorized) 28x28 pixel images depicting hand-written numbers.
 
 # Experimental setup
 For the MNIST data set, use the already provided (60k/10k images) train/test splits. For the ORL data set, randomly split each of the 40 classes in 70% training and 30% test images. In both data sets, use the training data to determine the best values for the hyper-parameters of each method. Then,  using  the  best  hyper-parameter  values,  train  the  methods  on  the  entire  training  set  and evaluate their performance on the test set.
