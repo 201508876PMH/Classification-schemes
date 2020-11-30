@@ -5,8 +5,8 @@ Optimization and Data Analytics Project
 In  this  Project  you  will implement  and compare  the  performance  offiveclassification  schemes. Implementation should be in MATLAB, C/C++ or Python. Finally, you will write a report following the standard scientific writing style. For the submission of the project, you will need to include code source files and the report in a .zip file. Submission will be through black board
 
 # Data
-You can find the following two datasets inthe blackboard page of the course:
-**ORL facedata set**: a set of 400 (vectorized) 40x30 facial images depicting 40 persons.
+You can find the following two datasets inthe blackboard page of the course:<br />
+**ORL facedata set**: a set of 400 (vectorized) 40x30 facial images depicting 40 persons.<br />
 **MNIST data set**: a set of 70k (vectorized) 28x28 pixel images depicting hand-written numbers.
 
 # Experimental setup
