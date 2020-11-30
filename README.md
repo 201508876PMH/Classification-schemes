@@ -12,7 +12,7 @@ For the MNIST data set, use the already provided (60k/10k images) train/test spl
 
 # Methods
  Implement and evaluate the performance of the following methods:
- Markup : 1. Nearest class centroid classifier
+ 1. Nearest class centroid classifier
           2. Nearest sub-class centroid classifier using number of subclasses in the set {2,3,5}
           3. Nearest Neighbor classifier
           4. Perceptron trained using Backpropagation
