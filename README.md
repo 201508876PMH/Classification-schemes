@@ -17,8 +17,8 @@ For the MNIST data set, use the already provided (60k/10k images) train/test spl
  1. Nearest class centroid classifier
  2. Nearest sub-class centroid classifier using number of subclasses in the set {2,3,5}
  3. Nearest Neighbor classifier
- 4. ~~Perceptron trained using Backpropagation
- 5. ~~Perceptron trained using MSE(least squares solution)
+ 4. ~~Perceptron trained using Backpropagation~~
+ 5. ~~Perceptron trained using MSE(least squares solution)~~
  
  Apply the above classifiers using:
  * the original data(784D for MNIST and 1200D for ORL)
